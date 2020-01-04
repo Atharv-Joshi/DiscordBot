@@ -1,9 +1,14 @@
 import discord
 import random
+import json
 from discord.ext import commands
 
 
 client = commands.Bot(command_prefix = ".")
+
+with open("C:\\Users\\dell\\Documents\\GitHub\\DiscordBot\\cursewords.json","r") as fileobj:
+    jsonfile = json.loads(fileobj.read())
+    cursewords = jsonfile["cursewords"]
 
 with open('C:\\Users\\dell\\Documents\\GitHub\\Token\\Token_File.txt','r') as obj:
     Token_here = obj.read()
@@ -28,13 +33,13 @@ async def on_member_join(member):
 @client.event
 async def on_member_remove(member):
     print(f"{member} has left the server")
-    await member.dm_channel.send(f'{member.mention}! has left the guild')
+    
     for channel in member.guild.channels:
         if (str(channel) == "voidmain"):
             await channel.send(f"{member.mention} has left the guild")
 
 @client.command(aliases = ["Take2","take2","Bot"])
-async def _8ball(ctx,*,question):
+async def _8ball(ctx,*question):
     responses =['Likely.',
                 'Yes - Definitely',
                 'Without a doubt',
@@ -88,19 +93,29 @@ async def unban(ctx,*,member):
 
 @client.event
 async def on_message(message):
-    await client.process_commands(message)
+    
     if (message.author == client.user):
         return
 
-    tbbt = ["My Brain is better than EveryBody's",
+    if (message.content in cursewords):
+        
+        await message.channel.purge(limit = 1)
+        await message.author.create_dm()
+        await message.author.dm_channel.send(f"{message.author.name} that's a strike buddy")
+
+    tbbt = ["My brain is better than everybody's",
             "That's my spot",
             "Bazinga PUNK ",
             "I'm not crazy ,my mother had me tested"]    
 
-
     if (message.content == 'tbbtquotes'):
-        await message.channel.send(random.choice(tbbt))    
-    
+        await message.channel.send(random.choice(tbbt))
+
+    await client.process_commands(message)
+
+@client.event
+async def on_message_delete(message):        
+        print(f"name:{message.author.name} \n message : {message.content}")
 
 
 
@@ -108,12 +123,14 @@ async def on_message(message):
 
 
 
-
-
-
-
+@client.command()
+async def logout(ctx):
+    await ctx.send("Bravo 6 going dark")
+    await client.logout()
 
 
 
 
 client.run(f"{Token_here}") 
+
+
