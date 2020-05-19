@@ -4,7 +4,7 @@ import json
 from discord.ext import commands
 
 
-client = commands.Bot(command_prefix = ".")
+client = commands.Bot(command_prefix = "!")
 
 with open("C:\\Users\\dell\\Documents\\GitHub\\DiscordBot\\cursewords.json","r") as fileobj:
     jsonfile = json.loads(fileobj.read())
@@ -13,7 +13,6 @@ with open("C:\\Users\\dell\\Documents\\GitHub\\DiscordBot\\cursewords.json","r")
 with open('C:\\Users\\dell\\Documents\\GitHub\\Token\\Token_File.txt','r') as obj:
     Token_here = obj.read()
 
-client = commands.Bot(command_prefix = ".")
 
 @client.event
 async def on_ready():
@@ -131,6 +130,6 @@ async def logout(ctx):
 
 
 
-client.run(f"{Token_here}") 
+client.run(Token_here) 
 
 
